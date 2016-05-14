@@ -1,19 +1,29 @@
 {
-  "name": "nodejs.test",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/asistent0/nodejs-lesson-5.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/asistent0/nodejs-lesson-5/issues"
-  },
-  "homepage": "https://github.com/asistent0/nodejs-lesson-5#readme"
+    "name": "nodejs.test",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/asistent0/nodejs-lesson-5.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/asistent0/nodejs-lesson-5/issues"
+    },
+    "homepage": "https://github.com/asistent0/nodejs-lesson-5#readme",
+    "dependencies": {
+        "body-parser": "^1.15.1",
+        "consolidate": "^0.14.1",
+        "express": "^4.13.4",
+        "jade": "^1.11.0",
+        "mongoose": "^4.4.16",
+        "nconf": "^0.8.4",
+        "path": "^0.12.7"
+    }
 }
