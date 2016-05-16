@@ -43,12 +43,15 @@ body
                             button.btn.btn-primary(type="button", name="add")
                                 span.glyphicon.glyphicon-plus
 
-
-    div.article.container
-
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
     script.
+        var dateFormat = new Date;
+        var d = dateFormat.getDate();
+        var m = ((dateFormat.getMonth() + 1) < 10) ? '0' + (dateFormat.getMonth() + 1) : (dateFormat.getMonth() + 1);
+        var y = dateFormat.getFullYear();
+        $('input[type="date"]').val(y + '-' + m + '-' + d);
+
         $(document).ready(function () {
             $.post('/', function (data) {
                 if (data.status == 'error') {
@@ -64,6 +67,7 @@ body
                     } else {
                         check = '';
                     }
+
                     $('tr.add')
                             .before('<tr>' +
                                     '<td><input type="checkbox" ' + check + ' data-id="' + param._id + '"></td>' +
@@ -122,6 +126,7 @@ body
                 var title = $("input[name='title']");
                 var description = $("input[name='description']");
                 var date = $("input[name='date']");
+                console.log(date.val());
                 $.post('/add', {
                     'title': title.val(),
                     'description': description.val(),

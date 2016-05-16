@@ -6,14 +6,14 @@ var mongoose = require('./mongooseDB'),
     TodoSchema = mongoose.Schema;
 
 var Todo = new TodoSchema({
-    title: String,
-    date: {type: Date, default: Date.now},
-    description: String,
+    title: {type: String, required: true},
+    date: {type: String, required: true},
+    description: {type: String, required: true},
     completed: Boolean
 });
 
 Todo.path('title').validate(function (v) {
-    return v.length > 3 && v.length < 20;
+    return v.length > 3 && v.length < 30;
 });
 
 var TodoModel = mongoose.model('Todo', Todo);

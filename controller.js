@@ -22,9 +22,10 @@ var add = function (req, res) {
     if ((req.body.title === '') && (req.body.description === '')) {
         return res.send({status: 'error'});
     }
+
     var todo = new TodoModel({
         title: req.body.title,
-        data: req.body.date,
+        date: req.body.date,
         description: req.body.description,
         completed: 0
     });
