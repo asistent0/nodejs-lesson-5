@@ -55,21 +55,26 @@ body
         var dateDefault = y + '-' + m + '-' + d;
         $('input[type="date"]').val(dateDefault);
 
+        function alertError(msg) {
+            $('div.todolist').after('<div class="alert alert-danger"><b>' + msg + '</div>');
+            setTimeout(function () {
+                $('div.alert').fadeOut('fast')
+            }, 3000);
+        };
+
         // Загружаем задачи
         $(document).ready(function () {
             $.post('/', function (data) {
                 if (data.status == 'error') {
-                    return alertError('Ощибка подключения');
+                    return alertError(data.msg);
                 }
                 $.each(data.todo, function (index, param) {
-
                     var check = '';
                     if (param.completed === true) {
                         check = 'checked';
                     } else {
                         check = '';
                     }
-
                     $('tr.add')
                             .before('<tr>' +
                                     '<td><input type="checkbox" ' + check + ' data-id="' + param._id + '"></td>' +
@@ -90,24 +95,26 @@ body
                     }
                 });
             }, 'json').fail(function () {
-                return alertError('Ощибка подключения');
-            })
+                return alertError('Ошибка подключения к базе данных');
+            });
 
-            // Отметка задач на выполнение
+            // Отметка задач об выполнении
             $(document).on('change', 'input:checkbox', function () {
                 var id = $(this).data('id');
                 $.post('/completed', {
                     'id': id
                 }, function (data) {
                     if (data.status === 'error') {
-                        return alertError('Ощибка подключения');
+                        return alertError('Сменить значение задачи не удалось' + data.msg);
                     }
                     if (data.todo.completed) {
                         $('[data-id="' + id + '"]').addClass('complete');
                     } else {
                         $('[data-id="' + id + '"]').removeClass('complete');
                     }
-                })
+                }, 'json').fail(function () {
+                    return alertError('Ошибка подключения к базе данных');
+                });
             });
 
             // Удаление задач
@@ -117,13 +124,15 @@ body
                     'id': id
                 }, function (data) {
                     if (data.status === 'error') {
-                        return alertError('Ощибка подключения');
+                        return alertError('Удалить не удалось' + data.msg);
                     }
                     if (data.status === 'success') {
                         $('[data-id="' + id + '"]').parent('td').parent('tr').remove();
                     }
-                })
-            })
+                }, 'json').fail(function () {
+                    return alertError('Ошибка подключения к базе данных');
+                });
+            });
 
             // Редактирование задач
             $(document).on('click', "button[name='edit']", function () {
@@ -159,7 +168,7 @@ body
                         'description': description.val()
                     }, function (data) {
                         if (data.status === 'error') {
-                            return alertError('Ощибка подключения');
+                            return alertError(data.msg);
                         }
 
                         $(title).replaceWith('<span data-id="' + data.todo._id + '">' + data.todo.title +
@@ -172,8 +181,10 @@ body
                                 '<span class="glyphicon glyphicon-pencil"></span></button>');
                         $('input[data-name="check"][data-id="' + id + '"]').replaceWith('<input type="checkbox"' +
                                 ' data-id="' + data.todo._id + '">');
-                    })
-                })
+                    }, 'json').fail(function () {
+                        return alertError('Ошибка подключения к базе данных');
+                    });
+                });
             });
 
             // Добавление новых задач
@@ -188,13 +199,14 @@ body
                     'date': date.val()
                 }, function (data) {
                     if (data.status === 'error') {
-                        return alertError('Ощибка подключения');
+                        return alertError(data.msg);
                     }
                     $('tr.add')
                             .before('<tr>' +
                                     '<td><input type="checkbox" data-id="' + data.todo._id + '"></td>' +
                                     '<td><span data-id="' + data.todo._id + '">' + data.todo.title + '</span></td>' +
-                                    '<td><span data-id="' + data.todo._id + '">' + data.todo.description + '</span></td>' +
+                                    '<td><span data-id="' + data.todo._id + '">' + data.todo.description +
+                                    '</span></td>' +
                                     '<td><span data-id="' + data.todo._id + '">' + data.todo.date + '</span></td>' +
                                     '<td><button type="button" class="btn btn-danger" name="dell" data-id="' +
                                     data.todo._id + '">' +
@@ -203,13 +215,12 @@ body
                                     data.todo._id + '">' +
                                     '<span class="glyphicon glyphicon-pencil"></span></button></td>' +
                                     '</tr>');
-                })
+                }, 'json').fail(function () {
+                    return alertError('Ошибка подключения к базе данных');
+                });
+
                 title.val('');
                 description.val('');
                 date.val(dateDefault);
             });
         });
-        function alertError(msg) {
-            $('div.todolist').after('<div class="alert alert-danger"><b>' + msg + '</div>');
-            setTimeout(function(){$('div.alert').fadeOut('fast')},2000);
-        };

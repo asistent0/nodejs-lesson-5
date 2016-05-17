@@ -11,16 +11,17 @@ var index = function (req, res) {
 var getting = function (req, res) {
     TodoModel.find({}, function (err, todos) {
         if (err) {
-            return res.json({status: 'error'});
+            return res.json({status: 'error', msg: 'Ошибка получения данных от сервера'});
         }
         res.json({status: 'success', todo: todos});
     });
 };
 
+
 // Add task to collection
 var add = function (req, res) {
-    if ((req.body.title === '') && (req.body.description === '')) {
-        return res.send({status: 'error'});
+    if ((req.body.title === '') || (req.body.description === '') || (req.body.date === '')) {
+        return res.send({status: 'error', msg: 'Ошибка, нельзя добавить пустую задачу, заполните все поля'});
     }
 
     var todo = new TodoModel({
@@ -32,7 +33,7 @@ var add = function (req, res) {
 
     todo.save(function (err) {
         if (err) {
-            return res.send({status: 'error'});
+            return res.send({status: 'error', msg: 'Ошибка добавления задачи в базу данных'});
         } else {
             return res.send({status: 'success', todo: todo});
         }
@@ -43,7 +44,11 @@ var add = function (req, res) {
 var description = function (req, res) {
     return TodoModel.findById(req.body.id, function (err, todo) {
         if (err) {
-            return res.send({status: 'error'});
+            return res.send({status: 'error', msg: 'Ошибка получения данных по этой задаче'});
+        }
+
+        if ((req.body.title === '') || (req.body.description === '') || (req.body.date === '')) {
+            return res.send({status: 'error', msg: 'Ошибка, все поля должны быть заполнены'});
         }
 
         todo.title = req.body.title;
@@ -52,7 +57,7 @@ var description = function (req, res) {
         todo.completed = 0;
         return todo.save(function (err) {
             if (err) {
-                return res.send({status: 'error'});
+                return res.send({status: 'error', msg: 'Ошибка, не удалось внести изменения в базу данных'});
             }
             res.send({status: 'success', todo: todo});
         });
@@ -63,7 +68,7 @@ var description = function (req, res) {
 var completed = function (req, res) {
     return TodoModel.findById(req.body.id, function (err, todo) {
         if (!todo) {
-            return res.send({status: 'error'});
+            return res.send({status: 'error', msg: 'Ошибка получения данных по этой задаче'});
         }
         var completed;
         if (todo.completed === true) {
@@ -86,7 +91,7 @@ var completed = function (req, res) {
 var dell = function (req, res) {
     return TodoModel.findById(req.body.id, function (err, todo) {
         if (!todo) {
-            return res.send({status: 'error'});
+            return res.send({status: 'error', msg: 'Ошибка получения данных по этой задаче'});
         }
         return TodoModel.remove({_id: req.body.id}, function (err) {
             if (err) {
