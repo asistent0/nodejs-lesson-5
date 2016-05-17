@@ -42,11 +42,14 @@ var add = function (req, res) {
 // Change task description
 var description = function (req, res) {
     return TodoModel.findById(req.body.id, function (err, todo) {
-        if (!todo) {
+        if (err) {
             return res.send({status: 'error'});
         }
 
+        todo.title = req.body.title;
+        todo.date = req.body.date;
         todo.description = req.body.description;
+        todo.completed = 0;
         return todo.save(function (err) {
             if (err) {
                 return res.send({status: 'error'});
